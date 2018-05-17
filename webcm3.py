@@ -171,8 +171,8 @@ if __name__ == '__main__':
 	parser.add_argument("-c", "--course",  nargs='+', help="Course code")
 	parser.add_argument("-a", "--account",  nargs=1, help="UNSW zid")
 	parser.add_argument("-p", "--password",  nargs=1, help="UNSW zPassword")
-	parser.add_argument("-l", "--lab", help="Download Lab", action='store_true')
-	parser.add_argument("-at", "--assessment", help="Download assessment", action='store_true')
+#	parser.add_argument("-l", "--lab", help="Download Lab", action='store_true')
+#	parser.add_argument("-at", "--assessment", help="Download assessment", action='store_true')
 	args = parser.parse_args()
 	
 	courseList = [c.upper() for c in args.course]
@@ -184,10 +184,10 @@ if __name__ == '__main__':
 		
 	for course in courseList:
 #		if args.lab:
-#			download_lab(course)
-		if args.assessment:
-			download_asst(course)
-#		download_lecture_notes(course)
+		download_lab(course)
+#		if args.assessment:
+		download_asst(course)
+		download_lecture_notes(course)
 	
 
 

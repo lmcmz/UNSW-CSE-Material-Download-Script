@@ -89,11 +89,12 @@ def download_lab(course):
 	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s1"
 	r = client.get(url, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
-	lec = soup.find('a', string="Lab Activities")
-	if not lec:
+	### Lab Activities, Labs
+	lab = soup.find('a', string=re.compile('Lab'))
+	if not lab:
 		print(course + " may not have Lab")
 		return
-	location = lec['href']
+	location = lab['href']
 
 	url_lec = root + location
 	r = client.get(url_lec, verify=False)
@@ -135,11 +136,12 @@ def download_asst(course):
 	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s1"
 	r = client.get(url, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
-	lec = soup.find('a', string="Assessments")
-	if not lec:
+	#### Assignments Assessments
+	asst = soup.find('a', string=re.compile('Ass'))
+	if not asst:
 		print(course + " may not have Asst")
 		return
-	location = lec['href']
+	location = asst['href']
 
 	url_lec = root + location
 	r = client.get(url_lec, verify=False)

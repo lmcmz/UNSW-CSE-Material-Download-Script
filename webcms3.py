@@ -81,8 +81,9 @@ def download_lecture_notes(course):
 			if pdf:
 				pdf_url = root + pdf.get('href')
 				path = os.path.join(course, week_str, name)
+				path.replace("\"", "§")
 				succ = util.download_file(pdf_url, path)
-				name = name.replace(".","∑").replace("\"", "§")
+				name = name.replace(".","&")
 				dict[course]["lec"][week_str][name]=pdf_url
 	print("  -------------  Lecture download complete. :^ )  -------------  ")
 	
@@ -130,8 +131,9 @@ def download_lab(course):
 			if pdf:
 				pdf_url = root + pdf.get('href')
 				path = os.path.join(course, week_str, "lab",name)
+				path.replace("\"", "§")
 				succ = util.download_file(pdf_url, path)
-				name = name.replace(".","∑").replace("\"", "§")
+				name = name.replace(".","&")
 				dict[course]["lab"][week_str][name] = pdf_url
 	print("  -------------  Lab download complete. :^ )  -------------  ")
 
@@ -180,8 +182,9 @@ def download_asst(course):
 			if pdf:
 				pdf_url = root + pdf.get('href')
 				path = os.path.join(course, week_str,name)
+				path.replace("\"", "§")
 				succ = util.download_file(pdf_url, path)
-				name = name.replace(".","∑").replace("\"", "§")
+				name = name.replace(".","&")
 				dict[course]["asst"][week_str][name] = pdf_url
 	print("  -------------  Asst download complete. :^ )  -------------  ")
 

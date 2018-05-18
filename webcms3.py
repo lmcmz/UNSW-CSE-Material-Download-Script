@@ -179,7 +179,8 @@ def download_asst(course):
 				pdf_url = root + pdf.get('href')
 				path = os.path.join(course, week_str,name)
 				succ = util.download_file(pdf_url, path)
-				dict[course]["asst"][week_str][name.replace(".","$")] = pdf_url
+				name = name.replace(".","$").replace("\"", "§")
+				dict[course]["asst"][week_str][name] = pdf_url
 	print("  -------------  Asst download complete. :^ )  -------------  ")
 
 if __name__ == '__main__':

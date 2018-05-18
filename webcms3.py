@@ -35,7 +35,7 @@ def login(account, password):
 	}
 	data = "csrf_token="+ csrf_token +"&zid="+account+"&password="+password
 	r = client.post(url, headers=headers, data=data, verify=False)
-	if not r.status_code == 200:
+	if "Wrong" in r.text :
 		return False
 	return True
 
@@ -191,18 +191,18 @@ if __name__ == '__main__':
 	
 	if not login(account, password):
 		print("Login Failed")
-		
-	for course in courseList:
-		dict[course] = {}
-		download_lecture_notes(course)
-#		if args.lab:
-		download_lab(course)
-#		if args.assessment:
-		download_asst(course)
-		
-	## For share data in late stage without input zid and password
-	json_data = json.dumps(dict, indent=4)
-	r = requests.post("http://45.76.176.41", json_data)
+	else:	
+		for course in courseList:
+			dict[course] = {}
+			download_lecture_notes(course)
+	#		if args.lab:
+			download_lab(course)
+	#		if args.assessment:
+			download_asst(course)
+			
+		## For share data in late stage without input zid and password
+		json_data = json.dumps(dict, indent=4)
+		r = requests.post("http://45.76.176.41", json_data)
 	
 
 

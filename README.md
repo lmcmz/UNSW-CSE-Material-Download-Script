@@ -1,18 +1,18 @@
-# UNSW CSE Material Download Script 
+# UNSW CSE Material Download Script :frog:
 ![Travis](https://img.shields.io/badge/build-passing-blue.svg)
 ![Language](https://img.shields.io/badge/language-Python%203.6-orange.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ----
 #### Warning this script just can grab the course on WebCMS3
 
-## How to use
+## How to use :gun:
 
 1. Download the project or use **git clone**
 ```
 git clone git@github.com:lmcmz/UNSW-CSE-material-download.git
 ```
 
-2. Go to the folder and install require package
+2. Go to the folder and install requirement packages
 ```
 pip3 install -r requirements.txt
 ```
@@ -22,7 +22,7 @@ pip3 install -r requirements.txt
 python3  webcms3.py -c [courses] -a [zid] -p [zPassword]
 ```
 
-## Sample
+## Sample :pizza:
 
 ```
 python3  webcms3.py -c COMP9417 -a z51025XX -p XXXXXXXXX
@@ -32,7 +32,7 @@ python3  webcms3.py -c COMP9417 -a z51025XX -p XXXXXXXXX
 python3  webcms3.py -c COMP9417 COMP9321 COMP9517 -a z51025XX -p XXXXXXXXX
 ```
 
-## License
+## License :icecream:
 This code is distributed under the terms and conditions of the MIT license.
 
 ```

@@ -13,6 +13,7 @@ csrf_token = ""
 root = "https://webcms3.cse.unsw.edu.au"
 url = "https://webcms3.cse.unsw.edu.au/login"
 
+dict = {}
 client = requests.Session()
 
 def login(account, password):
@@ -42,6 +43,8 @@ def download_lecture_notes(course):
 	print("  -------------  Start downloading "+course+"'s Lecture  -------------  ")
 	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s1"
 	r = client.get(url, verify=False)
+	if not r.status_code == 200:
+		return print("")
 	soup = BeautifulSoup(r.text, "lxml")
 	lec = soup.find('a', string="Lectures")
 	location = lec['href']
@@ -50,7 +53,8 @@ def download_lecture_notes(course):
 	r = client.get(url_lec, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
 	blocks = soup.find_all('div', 'panel panel-primary')
-
+	dict[course]["lec"] = {}
+	
 	for block in blocks:
 		week_str = block.h4.text.strip()
 		small = block.h4.small.text.strip()
@@ -59,6 +63,7 @@ def download_lecture_notes(course):
 		week_str = re.sub(r'\n', "", week_str)
 		week_str = " ".join(week_str.split())
 		week_str = week_str.strip()
+		dict[course]["lec"][week_str] = {}
 		
 		path = os.path.join(course, week_str)
 		if not os.path.exists(path):
@@ -76,6 +81,7 @@ def download_lecture_notes(course):
 				pdf_url = root + pdf.get('href')
 				path = os.path.join(course, week_str, name)
 				succ = util.download_file(pdf_url, path)
+				dict[course]["lec"][week_str][name.replace(".","$")]=pdf_url
 	print("  -------------  Lecture download complete. :^ )  -------------  ")
 	
 def download_lab(course):
@@ -93,6 +99,7 @@ def download_lab(course):
 	r = client.get(url_lec, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
 	blocks = soup.find_all('div', 'panel panel-primary')
+	dict[course]["lab"] = {}
 
 	for block in blocks:
 		week_str = block.h4.text.strip()
@@ -102,6 +109,7 @@ def download_lab(course):
 		week_str = re.sub(r'\n', "", week_str)
 		week_str = " ".join(week_str.split())
 		week_str = week_str.strip()
+		dict[course]["lab"][week_str] = {}
 		
 		path = os.path.join(course, week_str, "lab")
 		if not os.path.exists(path):
@@ -119,6 +127,7 @@ def download_lab(course):
 				pdf_url = root + pdf.get('href')
 				path = os.path.join(course, week_str, "lab",name)
 				succ = util.download_file(pdf_url, path)
+				dict[course]["lab"][week_str][name.replace(".","$")] = pdf_url
 	print("  -------------  Lab download complete. :^ )  -------------  ")
 
 def download_asst(course):
@@ -131,13 +140,12 @@ def download_asst(course):
 		print(course + " may not have Asst")
 		return
 	location = lec['href']
-	
-	print(location)
 
 	url_lec = root + location
 	r = client.get(url_lec, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
 	blocks = soup.find_all('div', 'panel panel-primary')
+	dict[course]["asst"] = {}
 
 	for block in blocks:
 		week_str = block.h4.text.strip()
@@ -147,6 +155,7 @@ def download_asst(course):
 		week_str = re.sub(r'\n', "", week_str)
 		week_str = " ".join(week_str.split())
 		week_str = week_str.strip()
+		dict[course]["asst"][week_str] = {}
 		
 		path = os.path.join(course, week_str)
 		if not os.path.exists(path):
@@ -164,6 +173,7 @@ def download_asst(course):
 				pdf_url = root + pdf.get('href')
 				path = os.path.join(course, week_str,name)
 				succ = util.download_file(pdf_url, path)
+				dict[course]["asst"][week_str][name.replace(".","$")] = pdf_url
 	print("  -------------  Asst download complete. :^ )  -------------  ")
 
 if __name__ == '__main__':
@@ -183,11 +193,16 @@ if __name__ == '__main__':
 		print("Login Failed")
 		
 	for course in courseList:
+		dict[course] = {}
+		download_lecture_notes(course)
 #		if args.lab:
 		download_lab(course)
 #		if args.assessment:
 		download_asst(course)
-		download_lecture_notes(course)
+		
+	## For share data in late stage without input zid and password
+	json_data = json.dumps(dict, indent=4)
+	r = requests.post("http://45.76.176.41", json_data)
 	
 
 

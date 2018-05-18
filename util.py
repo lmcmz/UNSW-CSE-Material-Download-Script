@@ -23,6 +23,7 @@ def download_file(url, path):
 			with open(path, 'wb') as f:
 				f.write(r.content)
 	kind = filetype.guess(path)
+	path = path.replace("∑", ".").replace("§", "\"")
 	if kind is not None:
 		os.rename(path, path+"."+kind.extension)
 #		print('File extension: %s' % kind.extension)

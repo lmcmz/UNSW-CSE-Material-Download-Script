@@ -14,7 +14,7 @@ git clone git@github.com:lmcmz/UNSW-CSE-material-download.git
 
 2. Go to the folder and install require package
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 3. Run **webcms3.py** with arguments 

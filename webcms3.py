@@ -46,7 +46,8 @@ def download_lecture_notes(course):
 	if not r.status_code == 200:
 		return print("")
 	soup = BeautifulSoup(r.text, "lxml")
-	lec = soup.find('a', string="Lectures")
+	sider_bar = soup.find('div', id='sidebar')
+	lec = sider_bar.find('a', string="Lectures")
 	location = lec['href']
 
 	url_lec = root + location
@@ -90,7 +91,8 @@ def download_lab(course):
 	r = client.get(url, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
 	### Lab Activities, Labs
-	lab = soup.find('a', string=re.compile('Lab'))
+	sider_bar = soup.find('div', id='sidebar')
+	lab = sider_bar.find('a', string=re.compile('Lab'))
 	if not lab:
 		print(course + " may not have Lab")
 		return
@@ -137,7 +139,9 @@ def download_asst(course):
 	r = client.get(url, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
 	#### Assignments Assessments
-	asst = soup.find('a', string=re.compile('Ass'))
+	sider_bar = soup.find('div', id='sidebar')
+	asst = sider_bar.find('a', string=re.compile('Ass'))
+#	print(asst)
 	if not asst:
 		print(course + " may not have Asst")
 		return

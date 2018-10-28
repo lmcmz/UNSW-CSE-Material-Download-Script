@@ -41,13 +41,15 @@ def login(account, password):
 
 def download_lecture_notes(course):
 	print("  -------------  Start downloading "+course+"'s Lecture  -------------  ")
-	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s1"
+	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s2"
 	r = client.get(url, verify=False)
 	if not r.status_code == 200:
 		return print("")
 	soup = BeautifulSoup(r.text, "lxml")
 	sider_bar = soup.find('div', id='sidebar')
 	lec = sider_bar.find('a', string="Lectures")
+	if not lec:
+		lec = sider_bar.find('a', string="Lectures  ")
 	location = lec['href']
 
 	url_lec = root + location
@@ -55,6 +57,8 @@ def download_lecture_notes(course):
 	soup = BeautifulSoup(r.text, "lxml")
 	blocks = soup.find_all('div', 'panel panel-primary')
 	dict[course]["lec"] = {}
+	
+#	print(sider_bar)
 	
 	for block in blocks:
 		week_str = block.h4.text.strip()
@@ -78,18 +82,28 @@ def download_lecture_notes(course):
 			name = " ".join(name.split())
 			
 			pdf = item.div.find('a',title="Download")
+			pdf_url = root
 			if pdf:
 				pdf_url = root + pdf.get('href')
+			if pdf_url == root:
+				pdf_url = item.div.a.get('href')
+			
+			if pdf_url != root:
+				name = name.replace("/", " ")
 				path = os.path.join(course, week_str, name)
-				path.replace("\"", "§")
+#				path = path.replace("\"", "§")
 				succ = util.download_file(pdf_url, path)
 				name = name.replace(".","&")
 				dict[course]["lec"][week_str][name]=pdf_url
+			else:
+				print("Cannot find lecture pdf")
+
+
 	print("  -------------  Lecture download complete. :^ )  -------------  ")
 	
 def download_lab(course):
 	print("  -------------  Start downloading "+course+"'s Lab  -------------  ")
-	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s1"
+	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s2"
 	r = client.get(url, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
 	### Lab Activities, Labs
@@ -116,7 +130,7 @@ def download_lab(course):
 		week_str = week_str.strip()
 		dict[course]["lab"][week_str] = {}
 		
-		path = os.path.join(course, week_str, "lab")
+		path = os.path.join(data_path, course, week_str, "lab")
 		if not os.path.exists(path):
 			os.makedirs(path)
 		
@@ -130,7 +144,7 @@ def download_lab(course):
 			pdf = item.div.find('a',title="Download")
 			if pdf:
 				pdf_url = root + pdf.get('href')
-				path = os.path.join(course, week_str, "lab",name)
+				path = os.path.join(data_path, course, week_str, "lab",name)
 				path.replace("\"", "§")
 				succ = util.download_file(pdf_url, path)
 				name = name.replace(".","&")
@@ -139,7 +153,7 @@ def download_lab(course):
 
 def download_asst(course):
 	print("  -------------  Start downloading "+course+"'s Asst  -------------  ")
-	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s1"
+	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s2"
 	r = client.get(url, verify=False)
 	soup = BeautifulSoup(r.text, "lxml")
 	#### Assignments Assessments
@@ -167,7 +181,7 @@ def download_asst(course):
 		week_str = week_str.strip()
 		dict[course]["asst"][week_str] = {}
 		
-		path = os.path.join(course, week_str)
+		path = os.path.join(data_path, course, week_str)
 		if not os.path.exists(path):
 			os.makedirs(path)
 		
@@ -181,7 +195,7 @@ def download_asst(course):
 			pdf = item.div.find('a',title="Download")
 			if pdf:
 				pdf_url = root + pdf.get('href')
-				path = os.path.join(course, week_str,name)
+				path = os.path.join(data_path, course, week_str,name)
 				path.replace("\"", "§")
 				succ = util.download_file(pdf_url, path)
 				name = name.replace(".","&")
@@ -208,13 +222,13 @@ if __name__ == '__main__':
 			dict[course] = {}
 			download_lecture_notes(course)
 	#		if args.lab:
-			download_lab(course)
+#			download_lab(course)
 	#		if args.assessment:
-			download_asst(course)
+#			download_asst(course)
 			
 		## For share data in late stage without input zid and password
-		json_data = json.dumps(dict, indent=4)
-		r = requests.post("http://45.76.176.41", json_data)
+#		json_data = json.dumps(dict, indent=4)
+#		r = requests.post("http://45.76.176.41", json_data)
 	
 
 

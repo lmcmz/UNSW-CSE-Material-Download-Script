@@ -5,8 +5,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import util
 
-account = "zid"
-password = "zPassword"
+account = "zID"
+password = "zPass"
 courseList = ["code"]
 csrf_token = ""
 
@@ -41,7 +41,7 @@ def login(account, password):
 
 def download_lecture_notes(course):
 	print("  -------------  Start downloading "+course+"'s Lecture  -------------  ")
-	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/18s2"
+	url = "https://webcms3.cse.unsw.edu.au/"+ course +"/19T1"
 	r = client.get(url, verify=False)
 	if not r.status_code == 200:
 		return print("")
